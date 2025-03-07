@@ -12,4 +12,4 @@ namespace eAppointmentServer.Application.Feature.Doctors.CreateDoctor;
 public sealed record CreateDoctorCommand(
     string FirstName,
     string LastName,
-    int Department) : IRequest<Result<string>>;
+    int DepartmentValue) : IRequest<Result<string>>;
