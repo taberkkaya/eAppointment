@@ -7,10 +7,17 @@ import { departments } from '../../constants';
 import { FormsModule, NgForm } from '@angular/forms';
 import { FormValidateDirective } from 'form-validate-angular';
 import { SwalService } from '../../service/swal.service';
+import { DoctorPipe } from '../pipe/doctor.pipe';
 
 @Component({
   selector: 'app-doctors',
-  imports: [CommonModule, RouterLink, FormsModule, FormValidateDirective],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    FormValidateDirective,
+    DoctorPipe,
+  ],
   templateUrl: './doctors.component.html',
   styleUrl: './doctors.component.css',
 })
@@ -18,11 +25,18 @@ export class DoctorsComponent implements OnInit {
   doctors: DoctorModel[] = [];
   departments = departments;
 
+  search: string = '';
+
   @ViewChild('addModalCloseBtn') addModalCloseBtn:
     | ElementRef<HTMLButtonElement>
     | undefined;
 
+  @ViewChild('updateModalCloseBtn') updateModalCloseBtn:
+    | ElementRef<HTMLButtonElement>
+    | undefined;
+
   createModel: DoctorModel = new DoctorModel();
+  updateModel: DoctorModel = new DoctorModel();
 
   constructor(private http: HttpService, private swal: SwalService) {}
 
@@ -43,6 +57,33 @@ export class DoctorsComponent implements OnInit {
         this.getAll();
         this.addModalCloseBtn?.nativeElement.click();
         this.createModel = new DoctorModel();
+      });
+  }
+
+  delete(id: string, fullName: string) {
+    this.swal.callSwal(
+      'Delete doctor',
+      `You want to delete ${fullName}?`,
+      () => {
+        this.http.post('Doctors/DeleteById', { id: id }, (res) => {
+          this.swal.callToast(res.data, 'info');
+          this.getAll();
+        });
+      }
+    );
+  }
+
+  get(data: DoctorModel) {
+    this.updateModel = { ...data };
+    this.updateModel.departmentValue = data.department.value;
+  }
+
+  update(form: NgForm) {
+    if (form.valid)
+      this.http.post<string>('Doctors/Update', this.updateModel, (res) => {
+        this.swal.callToast(res.data, 'success');
+        this.getAll();
+        this.updateModalCloseBtn?.nativeElement.click();
       });
   }
 }
