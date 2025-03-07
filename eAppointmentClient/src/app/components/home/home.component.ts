@@ -127,4 +127,26 @@ export class HomeComponent {
       );
     }
   }
+
+  onAppointmentDeleted(e: any) {
+    e.cancel = true;
+  }
+  onAppointmentDeleting(e: any) {
+    e.cancel = true;
+    console.log(e);
+    this.swal.callSwal(
+      'Delete appointment?',
+      `You want to delete ${e.appointmentData.patient.fullName}'s appointment?`,
+      () => {
+        this.http.post<string>(
+          'Appointments/DeleteById',
+          { id: e.appointmentData.id },
+          (res) => {
+            this.swal.callToast(res.data, 'info');
+            this.getAllAppointments();
+          }
+        );
+      }
+    );
+  }
 }
