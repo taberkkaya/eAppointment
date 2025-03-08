@@ -17,6 +17,8 @@ export class ErrorService {
       message = 'API is not avaliable!';
     } else if (err.status === 404) {
       message = 'API is not found!';
+    } else if (err.status === 401) {
+      message = 'You are not authorized!';
     } else if (err.status === 500) {
       message = '';
       for (const e of err.error.errorMessages) {
