@@ -43,11 +43,18 @@ export class UsersComponent {
 
   ngOnInit(): void {
     this.getAll();
+    this.getAllRoles();
   }
 
   getAll() {
     this.http.post<UserModel[]>('Users/GetAll', {}, (res) => {
       this.users = res.data;
+    });
+  }
+
+  getAllRoles() {
+    this.http.post<RoleModel[]>('Users/GetAllRoles', {}, (res) => {
+      this.roles = res.data;
     });
   }
 
@@ -76,6 +83,7 @@ export class UsersComponent {
 
   get(data: UserModel) {
     this.updateModel = { ...data };
+    console.log(this.updateModel);
   }
 
   update(form: NgForm) {
