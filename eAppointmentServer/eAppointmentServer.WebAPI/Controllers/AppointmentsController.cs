@@ -3,6 +3,7 @@ using eAppointmentServer.Application.Feature.Appointments.DeleteAppointmentById;
 using eAppointmentServer.Application.Feature.Appointments.GetAllAppointments;
 using eAppointmentServer.Application.Feature.Appointments.GetAllDoctorsByDepartment;
 using eAppointmentServer.Application.Feature.Appointments.GetPatientByIdentityNumber;
+using eAppointmentServer.Application.Feature.Appointments.UpdateAppointment;
 using eAppointmentServer.WebAPI.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,13 @@ namespace eAppointmentServer.WebAPI.Controllers
 
         [HttpPost]
         public async Task<IActionResult> DeleteById(DeleteAppointmentByIdCommand request, CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(request, cancellationToken);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(UpdateAppointmentCommand request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
             return StatusCode(response.StatusCode, response);
