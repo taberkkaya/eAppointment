@@ -45,6 +45,7 @@
           <th>Full Name</th>
           <th>User Name</th>
           <th>Email</th>
+          <th>Roles</th>
           <th>Operations</th>
         </tr>
       </thead>
@@ -55,6 +56,13 @@
           <td>{{ user.fullName }}</td>
           <td>{{ user.userName }}</td>
           <td>{{ user.email }}</td>
+          <td>
+            <ul>
+              @for(r of user.roleNames; track r){
+              <li>{{ r }}</li>
+              }
+            </ul>
+          </td>
           <td>
             <button
               (click)="get(user)"
@@ -258,18 +266,6 @@
               class="form-control"
               required
               minlength="3"
-            />
-            <div class="invalid-feedback"></div>
-          </div>
-
-          <div class="form-group mt-2">
-            <label>Password</label>
-            <input
-              type="password"
-              [(ngModel)]="updateModel.password"
-              name="updatePassword"
-              class="form-control"
-              required
             />
             <div class="invalid-feedback"></div>
           </div>

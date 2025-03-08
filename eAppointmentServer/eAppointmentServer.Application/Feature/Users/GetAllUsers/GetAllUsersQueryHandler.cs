@@ -1,4 +1,5 @@
-﻿using eAppointmentServer.Domain.Entities;
+﻿using System.Data;
+using eAppointmentServer.Domain.Entities;
 using eAppointmentServer.Domain.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +24,7 @@ internal sealed class GetAllUsersQueryHandler(
                 Id = s.Id,
                 FirstName = s.FirstName,
                 LastName = s.LastName,
+                FullName = s.FullName,
                 Email = s.Email,
                 UserName = s.UserName,
             }).ToList();
@@ -33,15 +35,25 @@ internal sealed class GetAllUsersQueryHandler(
                 .Where(p => p.UserId == user.Id)
                 .ToListAsync(cancellationToken);
 
-            foreach(var userRole in userRoles)
-            {
-                List<AppRole> roles = await roleManager.Roles
-                    .Where(p => p.Id == userRole.RoleId)
-                    .ToListAsync(cancellationToken);
+            List<Guid> stringRoles = new();
+            List<string?> roleNames =new();
 
-                List<string?> stringRoles = roles.Select(p => p.Name).ToList();
-                user.RoleIds = stringRoles;
+            foreach (var userRole in userRoles)
+            {
+                AppRole? role = await roleManager
+                    .Roles
+                    .Where(p => p.Id == userRole.RoleId)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (role is not null)
+                {
+                    stringRoles.Add(role.Id);
+                    roleNames.Add(role.Name);
+                }
             }
+
+            user.RoleIds = stringRoles;
+            user.RoleNames = roleNames;
         }
 
         return response;
