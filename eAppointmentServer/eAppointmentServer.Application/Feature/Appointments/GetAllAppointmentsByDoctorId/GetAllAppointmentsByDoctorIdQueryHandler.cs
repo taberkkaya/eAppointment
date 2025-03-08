@@ -16,7 +16,7 @@ namespace eAppointmentServer.Application.Feature.Appointments.GetAllAppointments
                 .ToListAsync(cancellationToken);
 
             List<GetAllAppointmentsByDoctorIdQueryResponse> response = appointments.
-                Select(s => new GetAllAppointmentsByDoctorIdQueryResponse(s.Id,s.StartDate,s.EndDate,s.Patient!.FullName,s.Patient))
+                Select(s => new GetAllAppointmentsByDoctorIdQueryResponse(s.Id, s.StartDate, s.EndDate, s.Patient!.FullName, s.Patient))
                 .ToList();
 
             return response;

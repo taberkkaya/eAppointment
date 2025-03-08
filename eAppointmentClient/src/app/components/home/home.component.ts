@@ -70,6 +70,7 @@ export class HomeComponent {
         },
         (res) => {
           this.appointments = res.data;
+          console.log(this.appointments);
         }
       );
     }
@@ -131,9 +132,9 @@ export class HomeComponent {
   onAppointmentDeleted(e: any) {
     e.cancel = true;
   }
+
   onAppointmentDeleting(e: any) {
     e.cancel = true;
-    console.log(e);
     this.swal.callSwal(
       'Delete appointment?',
       `You want to delete ${e.appointmentData.patient.fullName}'s appointment?`,
@@ -148,5 +149,19 @@ export class HomeComponent {
         );
       }
     );
+  }
+
+  onAppointmentUpdating(e: any) {
+    e.cancel = true;
+    const data = {
+      id: e.oldData.id,
+      startDate: this.date.transform(e.newData.startDate, 'dd.MM.yyyy HH:mm'),
+      endDate: this.date.transform(e.newData.endDate, 'dd.MM.yyyy HH:mm'),
+    };
+
+    this.http.post<string>('Appointments/Update', data, (res) => {
+      this.swal.callToast(res.data);
+      this.getAllAppointments();
+    });
   }
 }
